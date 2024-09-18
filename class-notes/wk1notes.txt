@@ -1,0 +1,55 @@
+Week 1 Steps made in server.js:
+
+In step 3 above, we tell the application to require express-ejs-layouts, 
+so it can be used. This follows a simple rule, "You have to have something in order to use it".
+
+In step 9, line one, we declare that ejs will be the view engine for our application. 
+Built into EJS is the understanding that all views will be stored in a views folder, and that is where EJS will look for all view files.
+
+Step 9, line 2, like step 3, tells the application to use the express-ejs-layouts package, 
+which has been stored into a "expressLayouts" variable.
+
+Step 9, line 3, says that when the express ejs layout goes looking for the basic template for a view, 
+it will find it in a layouts folder, and the template will be named layout.
+
+There are a couple of items to be understood with this code:
+The layout template is expected to be found at the root of the views folder. 
+However, if every view were just dumped at the root, it could be difficult to organize and manage. 
+So, a folder structure will be implemented and views will be stored into folders to impose organization.
+When creating a view file, like any file, it will have a name and extension. 
+However, EJS will always look for files with the extension "ejs", which means that when we declare a file in a path, 
+the extension can be left out. So, EJS will read the path ./layouts/layout and look in the views folder (indicated by the period), 
+then for a subfolder named layouts, then for a file named layout.ejs.
+From this point forward, all dynamic views will be stored in the views folder - typically in a subfolder 
+depending on what part of the application the view belongs or will be used.
+
+Partials
+A partial is what it sounds like, a part of a whole. In this case, 
+each partial represents code for that particular part of the entire finished view. 
+As you look at the layout code you should identify four partials: head, header, navigation and footer. 
+Each of these is indicted as part of an include function. Let's build each of these now.
+
+Static.js
+Line 1 - The express package is brought into the scope of the file and assigned to a local variable.
+Line 2 - The Express "router" functionality is invoked and stored into a local variable for use. Notice the (), indicating that Router is a function.
+Lines 4 & 5 - Comments
+Line 6 - Indicates that the Express router is to "use" the "express.static" function, meaning this is where static resources will be found, with the public folder.
+Line 7 - Indicates that any route that contains /css is to refer to the public/css folder, which is found at the root level of the project.
+Line 8 - Indicates that any route that contains /js is to refer to the public/js folder, which is found at the root level of the project.
+Line 9 - Indicates that any route that contains /images is to refer to the public/images folder, which is found at the root level of the project.
+Lines 7, 8 and 9 allow you to write paths pointing to these resources easily and also to add the subfolders for images, CSS and JavaScript and 
+have them still operate correctly.
+Line 11 - Exports the router object, along with all of these use statements for use in other areas of the application. This is VERY IMPORTANT. 
+If a resource is NOT exported, it cannot be used somewhere else.
+
+Server.js - Index line 27
+The second line does a number of things: 
+1. app.get - The express application will watch the "get" object, within the HTTP Request, for a particular route.
+2. "/" - This is route being watched. It indicates the base route of the application or the route 
+which has no specific resource requested.
+3. function(req, res){ - A JavaScript function that takes the request and response objects as parameters.
+4. res.render() - The "res" is the response object, while "render()" is an Express function 
+that will retrieve the specified view - "index" - to be sent back to the browser.
+5. {title: "Home" } - The curly braces are an object (treated like a variable), which holds a name - value pair. 
+This object supplies the value that the "head" partial file expects to receive. The object is passed to the view.
+6. }) - The right curly brace closes the function, while the right parentheses closes the "get" route.
