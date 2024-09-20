@@ -1,6 +1,151 @@
 /******* Change Box Model ***************/
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+:root {
+  --header-font: "Montserrat", sans-serif;
+  --main-font: "Open Sans", sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+footer {
+  clear: both;
+}
+
+.siteName a, #tools a {
+  text-decoration: none;
+  color: black;
+}
+
+.siteName {
+  font-family: var(--header-font);
+  font-size: 40px;
+  font-weight: bold;
+}
+
+#tools {
+  font-family: var(--main-font);
+  font-size: x-large;
+}
+
+footer, nav ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background: black;
+  color: white;
+}
+
+nav ul {
+  padding: 1rem;
+}
+
+footer, nav li {
+  font-family: var(--main-font);
+  font-size: larger;
+  list-style: none;
+}
+
+h1 {
+  font-family: var(--header-font);
+  font-size: x-large;
+}
+
+.delorean_car img {
+  display: block;   
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+h2, h3 {
+  font-family: var(--main-font);
+  font-size: large;
+  margin-left: 1rem;
+}
+
+.card {
+  padding-bottom: .5rem;
+}
+
+.details h2 {
+  margin: 0 1rem 0 1rem;
+}
+
+.details ul {
+  padding-left: 1rem;
+}
+
+.details li, .content_upgrades li {
+  list-style: none;
+  font-family: var(--main-font);
+}
+
+.details li {
+  font-size: medium;
+}
+
+.details {
+  font-weight: bold;
+  box-sizing: content-box;
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: auto;
+  left: 5%;
+  background: rgb(248, 254, 255, .8);
+  color: rgb(58, 190, 210);
+  padding: .25em;
+  padding: 1rem;
+}
+
+.btn {
+  font-weight: bold;
+  font-size: medium;
+  background: rgb(58, 190, 210);
+  width: auto;
+  height: 15%;
+}
+
+.content_upgrades {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 0 5px;
+  justify-items: center;
+  padding-left: 0;
+}
+
+.reviews li {
+  font-family: var(--main-font);
+  font-size: medium;
+  font-weight: bold;
+  padding: 1rem;
+}
+
+.image {
+  box-sizing: content-box;
+  background: rgb(58, 190, 210);
+  border: solid 4px rgb(12, 120, 187);
+  width: 125px;
+  height: 50%;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.image img {
+  display: block;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
 }

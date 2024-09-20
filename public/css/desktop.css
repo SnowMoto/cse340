@@ -1,0 +1,40 @@
+@media (min-width: 750px) {
+
+    h1 {
+        font-size: xx-larger;
+        margin-left: 20%;
+    }
+
+    .delorean_car img {
+        width: 50%;
+      }
+      
+    .details {
+        font-size: larger;
+        top: auto;
+        left: 25%;
+      }
+    
+    .btn {
+        font-size: larger;
+        height: 25%;
+    } 
+
+    .card {
+        float:left;
+        width: 50%;
+    }
+
+    .content_upgrades {
+        display: grid;
+        grid-template-columns: 40% 40%;
+        grid-gap: 0px 10px;
+        justify-items: center;
+    }
+
+    .image {
+        width: 200px;
+        height: 50%;
+        padding: 1.5rem 1.5rem 0 1.5rem;
+      }
+}
