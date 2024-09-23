@@ -98,23 +98,21 @@ h2, h3 {
 .details {
   font-weight: bold;
   box-sizing: content-box;
-  width: auto;
-  height: auto;
   display: flex;
   flex-direction: column;
   position: absolute;
   top: auto;
   left: 5%;
   background: rgb(248, 254, 255, .8);
-  color: rgb(58, 190, 210);
-  padding: .25em;
-  padding: 1rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: .5rem;
 }
 
 .btn {
   font-weight: bold;
   font-size: medium;
-  background: rgb(58, 190, 210);
+  color: white;
+  background: rgb(0, 85, 110);
   width: auto;
   height: 15%;
 }
@@ -122,7 +120,6 @@ h2, h3 {
 .content_upgrades {
   display: grid;
   grid-template-columns: 50% 50%;
-  grid-gap: 0 5px;
   justify-items: center;
   padding-left: 0;
 }
@@ -136,11 +133,11 @@ h2, h3 {
 
 .image {
   box-sizing: content-box;
-  background: rgb(58, 190, 210);
-  border: solid 4px rgb(12, 120, 187);
+  background:black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: .5rem;
   width: 125px;
   height: 50%;
-  padding: 1.5rem 1.5rem 0 1.5rem;
 }
 
 .image img {
@@ -148,4 +145,14 @@ h2, h3 {
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  border: solid 3px white;
+  padding: 1rem;
+}
+
+.odd {
+  padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.even {
+  padding: 1rem 1rem 1.5rem 1rem;
 }
