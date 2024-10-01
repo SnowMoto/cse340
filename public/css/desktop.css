@@ -8,6 +8,12 @@
     .delorean_car img {
         width: 50%;
       }
+
+    footer, nav ul {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }  
       
     .details {
         font-size: larger;

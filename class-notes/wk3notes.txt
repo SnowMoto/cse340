@@ -1,0 +1,139 @@
+indes.js:
+
+Line 1 - imports the "Pool" functionality from the "pg" package. A pool is a collection of connection objects (10 is the default number) that allow multiple site visitors to be interacting with the database at any given time. This keeps you from having to create a separate connection for each interaction.
+Line 2 - imports the "dotenv" package which allows the sensitive information about the database location and connection credentials to be stored in a separate location and still be accessed.
+Line 3-8 - a multi-line comment concerning the "ssl" code found in the connection pool function. This is critical code. Be sure to read and understand the comment..
+Line 9 - creates a local pool variable to hold the functionality of the "Pool" connection.
+Line 10 - an if test to see if the code exists in a developent environment, as declared in the .env file. In the production environment, no value will be found.
+Line 11 - creates a new pool instance from the imported Pool class.
+Line 12 - indicates how the pool will connect to the database (use a connection string) and the value of the string is stored in a name - value pair, which is in the .env file locally, and in an "environment variable" on a remote server. These are equivelent concepts, but different implementations.
+Lines 13 through 15 - describes how the Secure Socket Layer (ssl) is used in the connection to the database, but only in a remote connection, as exists in our development environment.
+A Short Explanation
+SSL is a means of excrypting the flow of information from one network location to another. In this case, when we attempt to communicate with the remote database server from our own computer the code indicates that the server should not reject our connection. However, when we work in a remote production server, the ssl lines must not exist. This is because our application server and the database server will be in the same system and their communication will be secure, which is what we will require.
+
+Line 16 - ends the pool function started on line 11.
+Line 17 - left blank.
+Lines 18-19 - comments related to the function to be exported in lines 21 through 31.
+Lines 20-31 - exports an asynchronous query function that accepts the text of the query and any parameters. When the query is run it will add the SQL to the console.log. If the query fails, it will console log the SQL text to the console as an error. This code is primarily for troubleshooting as you develop. As you test the application in your development mode, have the terminal open, and you will see the queries logged into the terminal as each is executed.
+Line 32 - ends the if and opens the else structure.
+Line 33 - creates a new "pool" instance from the "Pool" class.
+Line 34 - indicates the value of the connection string will be found in an environment variable. In the production environment, such a variable will not be stored in our .env file, but in the server's settings.
+Line 35 - ends the Pool object and instance creation.
+Line 36 - exports the pool object to be used whenever a database connection is needed. This is for the production environment, which means the queries will not be entered into the console.
+Line 37 - ends the else structure.
+
+inventory.js:
+
+Line 1 - imports the database connection file (named index.js) from the database folder which is one level above the current file. Because the file is index.js, it is the default file, and will be located inside the database folder without being specified. The path could also be ../database/index.js. It would return the same result.
+Line 2 - left intentionally blank.
+Lines 3-5 - a multi-line comment introducing the function.
+Line 6 - creates an "asynchronous" function, named getClassifications. An asynchronous function returns a promise, without blocking (stopping) the execution of the code. It allows the application to continue and will then deal with the results from the promise when delivered.
+Line 7 - will return (send back) the result of the SQL query, which will be sent to the database server using a pool connection, when the resultset (data) or an error, is sent back by the database server. Notice the two keywords: return and await. Await is part of the Async - Await promise structure introduced in ES6. Return is an Express keyword, indicating that the data should be sent to the code location that called the function originally.
+Line 8 - ends the function began on line 6.
+Line 9 - left intentionally blank.
+Line 10 - exports the function for use elsewhere.
+
+baseController.js:
+
+Line 1 - imports an index.js file (which does not yet exist) from a utilities folder (which does not yet exist) which is one level above the current location inside the controllers folder.
+Line 2 - creates an empty object named baseController.
+Line 3 - left intentionally blank.
+Line 4 - creates an anonymous, asynchronous function and assigns the function to buildHome which acts as a method of the baseController object. In short, this is similar in concept to creating a method within a class, where baseController would be the class name and buildHome would be the method. Being asynchronous, it does not block (stop) the application from executing while it awaits the results of the function to be returned. The function itself accepts the request and response objects as parameters.
+Line 5 - calls a getNav() function that will be found in the utilities > index.js file. The results, when returned (notice the "await" keyword), will be stored into the nav variable.
+Line 6 - is the Express command to use EJS to send the index view back to the client, using the response object. The index view will need the "title" name - value pair, and the nav variable. The nav variable will contain the string of HTML code to render this dynamically generated navigation bar.
+Line 7 - ends the function started on line 4.
+Line 8 - left intentionally blank.
+Line 9 - exports the baseController object for use elsewhere.
+
+utilities/index.js;
+
+Line 1 - requires the inventory-model file, so it can be used to get data from the database.
+Line 2 - creates an empty Util object. Just as you did earlier in the base controller.
+Line 3 - left intentionally blank.
+Lines 4 through 6 - a multi-line comment introducing the function.
+Line 7 - creates an asynchronous function, which accepts the request, response and next methods as parameters. The function is then stored in a getNav variable of the Util object.
+Line 8 - calls the getClassifications() function from the inventory-model file and stores the returned resultset into the data variable.
+Line 9 - creates a JavaScript variable named list and assigns a string to it. In this case, the string is the opening of an HTML unordered list. Note the use of let. This is because the value will be changed as the upcoming lines of the function are processed.
+Line 10 - the list variable has an addition string added to what already exists. Note the use of +=, which is the JavaScript append operator. In this instance a new list item, containing a link to the index route, is added to the unordered list.
+Line 11 - uses a forEach loop to move through the rows of the data array one at a time. For each row, the row is assigned to a row variable and is used in the function.
+Line 12 - appends an opening list item to the string in the list variable.
+Line 13 - appends the code that is found on lines 14 through 20 as a string to the list variable.
+Line 16 - a string that includes the beginning of an HTML anchor. The + sign is the JavaScript concatenation operator, used to join two strings together. The value in the href attribute is part of a route that will be watched for in an Express router.
+Line 17 - the classification_id value found in the row from the array. It is being added into the link route.
+Line 18 - the title attribute of the anchor element.
+Line 19 - the classification_name value found in the row from the array. It is being added into the title attribute.
+Line 20 - the last part of the string forming the opening HTML anchor tag.
+Line 21 - the classification_name from the row being displayed between the opening and closing HTML anchor tags. This is the display name in the navigation bar.
+Line 22 - the closing HTML anchor tag.
+Line 23 - the closing list item tag being added to the list variable.
+Line 24 - the ending of the forEach loop and enclosed anonymous function.
+Line 25 - the closing HTML unordered list tag being appended to the list variable.
+Line 26 - sends the finished string, back to where the getNav function was called.
+Line 27 - ends the function which started on line 7.
+
+Querying:
+Multiple Items: [objectName].rows
+Single Item: [objectName].rows[0]
+
+Creating new Router object for specific elements of application:
+Line 1 - a comment for the lines to follow.
+Line 2 - brings Express into the scope of the file.
+Line 3 - uses Express to create a new Router object. Remember in lesson 2 that using separate router files for specific elements of the application would keep the server.js file smaller and more manageable? That's what we're doing.
+Line 4 - brings the inventory controller into this router document's scope to be used.
+
+Add line to inventory routes:
+Line 1 - a comment for the route.
+Line 2 - the route, which is divided into three elements:
+"get" indicates that the route will listen for the GET method within the request (typically a clicked link or the URL itself).
+/type/:classificationId the route being watched for (note that the inv element of the route is missing, but it will be accounted for later).
+invController.buildByClassification indicates the buildByClassification function within the invController will be used to fulfill the request sent by the route.
+Line 3 - left intentionally blank.
+Line 4 - exports the router object for use elsewhere.
+
+Adding invController code:
+Line 1 - brings the inventory-model.js file into scope and stores its functionality into a invModel variable.
+Line 2 - brings the utilities > index.js file into scope and stores its functionality into an utilities variable.
+Line 3 - left intentionally blank.
+Line 4 - creates an empty object in the invCont variable.
+Line 5 - left intentionally blank.
+Lines 6-8 - a multi-line comment.
+Line 9 - creates an asynchronous, anonymous function which accepts the request and response objects, along with the Express next function as parameters. The function is stored into a named method of buildByClassificationId.
+Line 10 - collects the classification_id that has been sent, as a named parameter, through the URL and stores it into the classification_id variable. req is the request object, which the client sends to the server. params is an Express function, used to represent data that is passed in the URL from the client to the server. classificationId is the name that was given to the classification_id value in the inventoryRoute.js file (see line 7 of that file). 
+Line 11 - calls the getInventoryByClassificationId function (you'll build that next), which is in the inventory-model file and passes the classification_id as a parameter. The function "awaits" the data to be returned, and the data is stored in the data variable.
+Line 12 - calls a utility function to build a grid, containing all vehicles within that classification (you'll build this later in this activity). Note that the "data" array is passed in as a parameter. An HTML string, containing a grid, is returned and stored in the grid variable.
+Line 13 - calls the function to build the navigation bar for use in the view and stores it in the nav variable.
+Line 14 - extracts the name of the classification, which matches the classification_id, from the data returned from the database and stores it in the className variable.
+Line 15 - calls the Express render function to return a view to the browser. The view to be returned is named classification, which will be created within an inventory folder, within the already existing views folder.
+Line 16 - build the "title" value to be used in the head partial, but you'll notice that it is dynamic to match the data.
+Line 17 - contains the nav variable, which will display the navigation bar of the view.
+Line 18 - contains the HTML string, containing the - grid - of inventory items.
+Line 19 - ends the "render" function which started on line 11.
+Line 20 - ends the function started on line 9.
+
+Adding code to inventory-model:
+Lines 1-3 - a multi-line comment.
+Line 4 - declares an asynchronous function by name and passes a variable, which should contain the classification_id value, as a parameter.
+Line 5 - opens a try - catch block.
+Lines 6-12 - creates an SQL query to read the inventory and classification information from their respective tables using an INNER JOIN. The query is written using a prepared statement. The "$1" is a placeholder, which will be replaced by the value shown in the brackets "[]" when the SQL statement is run. The SQL is queried against the database via the database pool. Note the await keyword, which means this query will wait for the information to be returned, where it will be stored in the data variable.
+Line 13 - sends the data, as an array of all the rows, back to where the function was called (in the controller).
+Line 14 - ends the try and opens the catch, with an error variable being supplied to store any error that may occur.
+Line 15 - writes the error, if any, to the console for us to read. We will have to deal with a better error handler in the future.
+Line 16 - closes the catch block.
+Line 17 - ends the function.
+Very important! This function must now be included in the exports at the bottom of the file. If not, it will not be usable by the controller.
+
+Adding to utilities to build classificiation:
+Lines 1-3 - A multi-line comment.
+Line 4 - declares the function as asynchronous and expects a data array as a parameter.
+Line 5 - declares a variable to hold a string.
+Line 6 - an "if" to see if the array is not empty.
+Line 7 - creates an unordered list element and adds it to the grid variable.
+Line 8 - sets up a "forEach" loop, to break each element of the data array into a vehicle object.
+Lines 9-25 - builds a single HTML <li>. Withing the list item is an <a> element that surrounds an <img> element. Next is a <div> that contains a horizontal rule, followed by an <h2> that contains another <a> with the Make and Model of the vehicle. Finally, is a <span> that contains a formatted price, in US dollars.
+Line 26 - closes the foreach process.
+Line 27 - closes the unordered list.
+Line 28 - ends the "if" and opens an "else". The else is executed if the data array is empty.
+Line 29 - stores a <p> with a message indicating that no vehicles match the classification.
+Line 30 - ends the "else".
+Line 31 - returns the variable to the calling location.
+Line 32 - ends the function.

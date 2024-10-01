@@ -39,7 +39,7 @@ footer {
 
 footer, nav ul {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
   background: black;
   color: white;
@@ -53,6 +53,10 @@ footer, nav li {
   font-family: var(--main-font);
   font-size: larger;
   list-style: none;
+}
+
+nav a {
+  color: white;
 }
 
 h1 {
