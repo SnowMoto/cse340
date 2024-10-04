@@ -12,9 +12,11 @@ invCont.buildByClassificationId = async function (req, res, next) {
   const grid = await utilities.buildClassificationGrid(data)
   let nav = await utilities.getNav()
   const className = data[0].classification_name
+  // view -- classification.ejs
   res.render("./inventory/classification", {
     title: className + " vehicles",
     nav,
+    errors: null,
     grid,
   })
 }
@@ -30,11 +32,12 @@ invCont.buildByInvId = async function (req, res, next) {
   const vehicleMake = data[0].inv_make
   const vehicleModel = data[0].inv_model
   const vehicleYear = data[0].inv_year
-  // view -- sing-vehicles.ejs
+  // view -- vehicle.ejs
   res.render("./inventory/single-vehicles", {
     title: vehicleYear + ' ' + vehicleMake + ' ' + vehicleModel,
     nav,
     grid,
+    errors: null,
   })
 }
 

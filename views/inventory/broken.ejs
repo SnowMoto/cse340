@@ -1,0 +1,12 @@
+<!-- Heading Content -->
+<% if (title) { %>
+    <h1><%= title %></h1>
+  <% } else {
+    res.redirect('/')
+    } %>
+  
+  <!-- displays error messages -->
+  <%- messages() %>
+  
+  <!-- Vehicle Display -->
+  <%- grid %>
