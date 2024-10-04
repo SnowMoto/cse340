@@ -11,7 +11,7 @@
 
     footer, nav ul {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: space-around;
       }  
       
@@ -41,5 +41,30 @@
     .image {
         width: 200px;
         height: 50%;
+      }
+
+/*Grid for the vehicles pages*/
+    #inv-display {
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+      }
+      
+    #inv-display li {
+        width: 25em;
+      }
+
+      .namePrice, h2 > a {
+        font-size: large;
+      }
+    
+/* single car view */
+    #vehicle {
+        grid-template-columns: 50% 40%;
+        padding-bottom: 1rem;
+      }
+
+    #vehicle img {
+        width: auto;
+        max-height: 14em;
       }
 }

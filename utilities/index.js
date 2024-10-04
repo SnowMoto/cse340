@@ -1,5 +1,6 @@
 const invModel = require("../models/inventory-model")
 const Util = {}
+require('dotenv').config()
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -16,7 +17,7 @@ Util.getNav = async function (req, res, next) {
       row.classification_id +
       '" title="See our inventory of ' +
       row.classification_name +
-      ' vehicles">' +
+      ' Vehicles">' +
       row.classification_name +
       "</a>"
     list += "</li>"
@@ -24,9 +25,6 @@ Util.getNav = async function (req, res, next) {
   list += "</ul>"
   return list
 }
-
-module.exports = Util
-
 
 /* **************************************
 * Build the classification view HTML
@@ -60,3 +58,45 @@ Util.buildClassificationGrid = async function(data){
   }
   return grid
 }
+
+/* **************************************
+* Build the single vehicle view HTML
+* ************************************ */
+Util.buildVehicleGrid = async function(data){
+  let grid
+  let vehicle = data[0]
+  if(data){
+    // open single vehicle view wrapper
+    grid = '<div id="vehicle">'
+    // image with alt
+    grid += '<img src="' + vehicle.inv_image 
+    + '" alt="Image of ' + vehicle.inv_year 
+    + vehicle.inv_make + vehicle.inv_model + '">'
+    // open unordered list for vehicle data
+    grid += '<ul id="details">'
+    // vehicle subtitle
+    grid += '<li><h2>' 
+    + vehicle.inv_make + ' ' + vehicle.inv_model 
+    + ' Details</h2></li>'
+    // formatted vehicle price
+    grid += '<li><strong>Price: </strong>$' 
+    + new Intl.NumberFormat('en-US').format(vehicle.inv_price) 
+    + '</li>'
+    // vehicle description
+    grid += '<li><strong>Description: </strong>' + vehicle.inv_description + '</li>'
+    // vehicle miles
+    grid += '<li><strong>Miles: </strong>' 
+    + new Intl.NumberFormat('en-US').format(vehicle.inv_miles) 
+    + '</li>'
+    // close unordered list for vehicle data
+    grid += '</ul>'
+    // close single vehicle view wrapper
+    grid += '</div>'
+
+  } else { 
+    grid += '<p class="notice">Sorry, no matching vehicle could be found.</p>'
+  }
+  return grid
+}
+
+module.exports = Util

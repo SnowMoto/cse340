@@ -43,6 +43,7 @@ footer, nav ul {
   justify-content: space-around;
   background: black;
   color: white;
+  text-align: center;
 }
 
 nav ul {
@@ -159,4 +160,68 @@ h2, h3 {
 
 .even {
   padding: 1rem 1rem 1.5rem 1rem;
+}
+
+/*Vehicles pages styling*/
+#inv-display {
+  display: grid;
+  gap: 1em;
+  list-style: none;
+  padding: 1em;
+  justify-content: center;
+}
+
+#inv-display li img {
+  width: 200px;
+  height: 110px;
+}
+
+#inv-display li {
+  max-width: 25em;
+  background-color: black;
+  border-radius: 1rem;
+  padding: 1rem 0 1rem 0;
+  text-align: center;
+}
+
+.namePrice {
+  color: white;
+  font-family: var(--main-font);
+}
+
+.namePrice h2 > a {
+  font-family: var(--header-font);
+  color: white;
+  text-decoration: none;
+}
+
+#vehicle {
+  display: grid;
+}
+
+#vehicle img {
+  width: 100%;
+  margin: auto;
+}
+
+#details {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  list-style: none;
+  padding: 0;
+}
+
+#details li:nth-child(even) {
+  background-color: gainsboro;
+}
+
+#details li h2 {
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0;
+}
+
+#details li {
+  font-size: 1.2em;
+  padding: .8em;
+  border-radius: .5em;
 }

@@ -19,5 +19,23 @@ invCont.buildByClassificationId = async function (req, res, next) {
   })
 }
 
+/* ***************************
+ *  Build inventory by single vehicle view
+ * ************************** */
+invCont.buildByInvId = async function (req, res, next) {
+  const inv_id = req.params.invId
+  const data = await invModel.getInventoryByInvId(inv_id)
+  const grid = await utilities.buildVehicleGrid(data)
+  let nav = await utilities.getNav()
+  const vehicleMake = data[0].inv_make
+  const vehicleModel = data[0].inv_model
+  const vehicleYear = data[0].inv_year
+  // view -- sing-vehicles.ejs
+  res.render("./inventory/single-vehicles", {
+    title: vehicleYear + ' ' + vehicleMake + ' ' + vehicleModel,
+    nav,
+    grid,
+  })
+}
 
 module.exports = invCont
