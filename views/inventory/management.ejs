@@ -1,0 +1,13 @@
+<!--Heading content-->
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <%} else {
+        res.redirect('/')
+    } %>
+ <!--Flash Message-->
+    <%- messages()  %>
+
+<div class="management-links">
+    <a href="/inv/add-classification.ejs">Add New Classification</a>
+    <a href="/inv/add-inventory.ejs">Add New Inventory</a>
+</div>

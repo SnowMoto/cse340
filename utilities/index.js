@@ -114,4 +114,32 @@ Util.buildBrokenPage = function(){
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+}
+
+/* ************************
+ * Constructs the classification HTML select options
+ ************************** */
+Util.getClassSelect = async function (selectedOption) {
+  let data = await invModel.getClassifications()
+  let options = `<option value="">Choose a classification</option>`
+  data.rows.forEach((row => {
+    options += 
+      `<option value="${row.classification_id}"
+      ${row.classification_id === Number(selectedOption) ? 'selected': ''}>
+      ${row.classification_name}
+      </option>`
+  }))
+  return options
+}
+
 module.exports = Util

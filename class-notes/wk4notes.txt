@@ -1,0 +1,91 @@
+Adding Session Packages in server.js
+Lines 1-3 - a section comment.
+Line 4 - invokes the app.use() function and indicates the session is to be applied. Recall that app.use() applies whatever is being invoked throughout the entire application.
+Line 5 - store is referring to where the session data will be stored. In this code, we are creating a new session table in our PostgreSQL database using the "connect-pg-simple" package, which is being required at this point. Notice the "{" at the end of the line, indicated a new object being sent in to the connection with configuration information.
+Line 6 - tells the session to create a "session" table in the database if it does not already exist.
+Line 7 - uses our database connection pool to interact with the database server.
+Line 8 - closes the configuration data object and the "new" session store creation function started on line 5.
+Line 9 - indicates a "secret" name - value pair that will be used to protect the session. We will create the value of the secret in the .env file later in this activity.
+Line 10 - This session for the session in the database is typically "false". But, because we are using "flash" messages we need to resave the session table after each message, so it must be set to "true".
+Line 11 - this setting is important to the creation process when the session is first created.
+Line 12 - this is the "name" we are assigning to the unique "id" that will be created for each session. In order to maintain "state", the session id will be stored into a cookie and passed back and forth from the server to the browser. We will not create the cookie, the session package will do so. The only item it will contain is the name "sessionId" and the actual value of the ID.
+Line 13 - ends the session creation and app.use function.
+
+Adding Expression in server.js
+Line 1 - a comment.
+Line 2 - requires the connect-flash package, within an app.use function, making it accessible throughout the application.
+Line 3 - app.use is applied and a function is passed in as a parameter. The funtion accepts the request, response and next objects as parameters.
+Line 4 - The express-messages package is required as a function. The function accepts the request and response objects as parameters. The functionality of the this function is assigned to the response object, using the "locals" option and a name of "messages". This allows any message to be stored into the response, making it available in a view.
+Line 5 - calls the "next()" function, passing control to the next piece of middleware in the application. Ultimately, this allows messages to be set, then pass on to the next process. Eventually, when a view is built, the message can be displayed in it.
+Line 6 - ends the function and app.use structure.
+
+After flash message created:
+While this may seem like a lot of setup, it is a one-time event. From now on, if you need to send a message from a controller to a view, 
+when using res.render(), or res.redirect(), you can. It makes moving messages around very easy.
+
+Login view accountController
+Lines 1 - 3 - a multi-line comment introducing the function.
+Line 4 - begins the function, declaring it as asynchronous, and passing in request, response and next as parameters.
+Line 5 - retrieves and stores the navigation bar string for use in the view.
+Line 6 - calls the render function and indicates the view to be returned to the client and opens the object that will carry data to the view. Note: the view is inside a folder, which should be within the "views" folder. This folder doesn't exist and must be created.
+Lines 7 - 8 - the data items to be sent to the view.
+Line 9 - closes the data object and the render function (opened on line 6).
+Line 10 - closes the function.
+Line 11 - left intentionally blank.
+Line 12 - exports the function for use elsewhere.
+
+Register Account js
+Lines 1-3 - a multi-line comment introducing the function.
+Line 4 - begins the function, declaring it as asynchronous, and passing in request, response as parameters.
+Line 5 - retrieves and stores the navigation bar string for use in the view.
+Lines 6-7 - collects and stores the values from the HTML form that are being sent from the browser in the body of the request object. We have an additional step to take to make this work, but we'll do it once this function is finished.
+Line 8 - left intentionally blank.
+Line 9 - calls the function, from the model, and uses the "await" keyword to indicate that a result should be returned and wait until it arrives. The result is stored in a local variable.
+Lines 10 - 13 - the parameters being passed into the function.
+Line 14 - ends the model function call.
+Line 15 - left intentionally blank.
+Line 16 - opens an "if" structure to determine if a result was received.
+Lines 17-21 - sets a flash message to be displayed. Notice the use of ticks, not single quotes, and the JavaScript object literal to display the client's name in the message.
+Line 22 -calls the render function to return the login view, along with an HTTP 201 status code for a successful insertion of data.
+Lines 23-24 - data within the data object being sent to the view. Note that the use of the login view. This gives the client the opportunity to practice using the username and password that they just used in the registration process.
+Line 25 - closes the data object and render method.
+Line 26 - closes the "if" block and opens the "else" block.
+Line 27 - sets the failure message if the insertion failed.
+Line 28 - calls the render function, sends the route to trigger a return to the registration view and sends a HTTP 501 status code. In this instance, the 501 status should be interpreted as "not successful".
+Lines 29-30 -The elements of the data object being sent to the view.
+Line 31 - closes the data object and render method.
+Line 32 - closes the "else" block.
+Line 33 - closes the function begun on line 4.
+
+Account Validation
+Lines 1-3 - a multi-line comment
+Line 4 - creates and opens an anonymous function and assigns it to the "registrationRules" property of the "validate" object.
+Line 5 - the "return" command and the opening of the array of checks for the incoming data.
+Line 6 - a single line comment for the check that begins on the next line.
+Line 7 - looks inside the HTTPRequest body for a name - value pair, where the name is "account_firstname". Remember the data trail concept? The form input has been given the same name as the column in the database table.
+Lines 8-9 - .trim() is a sanitizing function used to remove whitespace (empty characters) on either side of the incoming string. .escape() finds any special character and transform it to an HTML Entity rendering it not operational as code.
+Lines 10-11 - .notEmpty() is a validatator ensuring that a value exists. .isLength() is a validatator checking for a specified length requirement. In our code, the option is an object that declares the minimum required length of the first name must be 1 character.
+Line 12 - .withMessage() is a function that allows an error message, specific to this rule, to be declared if the requirements are not met. If this custom message were not provided a default message of "invalid value" would be provided.
+Line 13 - left intentionally blank.
+Lines 12-20 - a rule of the last name, that is nearly identical to that for the first name.
+Line 21 - left intentionally blank.
+Line 22 - a comment introducing the email check.
+Line 23 - indicates that the "account_email" name - value pair is to be located in the HTTPRequest body.
+Lines 24-26 - sanitizers and a validator, the same as those for the first and last names.
+Line 27 - isEmail() is a validation function that checks the string for characters that should be present in a valid email address. Check the validator.js documentation for additional options and default settings.
+Line 28 - normalizeEmail() is a sanitization function that makes the email all lowercase, as well as additional alterations to "canonicalize" an email. Refer to the validator.js documentation for default settings and options. Note that the official documentation specifies that the checks on lines 27 and 28 must be in this order.
+Line 29 - provides a custom error message for the email data.
+Line 30 - left intentionally blank.
+Line 31 - a comment for the password check
+Line 32 - begins the password check process.
+Lines 33-34 - same sanitizer and validator as previous inputs.
+Line 35 - isStrongPassword() is a function for checking a password string to meet specific requirements to be considered a strong password. By default, the function returns a boolean - True or False. Can also have an option added to return a strength score.
+Line 36 - a name - value pair within the options object that indicates the minimum length of the password must be 12 characters.
+Line 37 - a name - value pair within the options object that indicates the minimum number of lowercase alphabetic characters must be one.
+Line 38 - a name - value pair within the options object that indicates the minimum number of uppercase alphabetic characters must be one.
+Line 39 - a name - value pair within the options object that indicates the minimum number of numeric characters must be one.
+Line 40 - a name - value pair within the options object that indicates the minimum number of symbol characters must be one.
+Line 41 - ends the option object and isStrongPassword function.
+Line 42 - the custom message if the password check fails.
+Line 43 - ends the array containing all the checks.
+Line 44 - ends the anonymous function opened on line 4.
