@@ -5,8 +5,17 @@
     res.redirect('/')
     } %>
   
-  <!-- displays error messages -->
+  <!-- Flash message -->
   <%- messages() %>
+
+  <!-- display errors -->
+  <% if (errors) { %>
+     <ul class="notice">
+  <% errors.array().forEach(error => { %>
+     <li><%= error.msg %></li>
+  <%  }) %>
+  </ul>
+  <% } %>
   
   <!-- display new inventory form -->
   <form class="form addvehicle-form" action="/inv/addvehicle" method="post">
@@ -48,4 +57,4 @@
       <input type="submit" name="submit" value="Add Vehicle">
     </fieldset>
   </form>
-  <script src="/js/script.js"></script>
+  <script src="../../public/js/script.js"></script>

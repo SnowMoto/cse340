@@ -1,7 +1,7 @@
 const accountModel = require("../models/account-model")
 const utilities = require("../utilities/")
-require("dotenv").config()
 const bcrypt = require("bcryptjs")
+require("dotenv").config()
 
 /* ****************************************
 *  Deliver login view

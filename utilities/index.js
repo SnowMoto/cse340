@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const accountModel = require("../models/account-model")
 const Util = {}
 require('dotenv').config()
 
@@ -141,5 +142,22 @@ Util.getClassSelect = async function (selectedOption) {
   }))
   return options
 }
+
+/* ************************
+ * Constructs the account HTML select options
+ ************************** */
+Util.getAccountSelect = async function (selectedOption) {
+  let data = await accountModel.getAccounts()
+  let options = `<option value="">Select a Recipient</option>`
+  data.rows.forEach((row => {
+    options += 
+      `<option value="${row.account_id}"
+      ${row.account_id === Number(selectedOption) ? 'selected': ''}>
+      ${row.account_firstname} ${row.account_lastname}
+      </option>`
+  }))
+  return options
+}
+
 
 module.exports = Util
