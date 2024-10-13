@@ -4,6 +4,7 @@
     <%} else {
         res.redirect('/')
     } %>
+
  <!--Flash Message-->
     <%- messages()  %>
   
@@ -17,8 +18,8 @@
   <% } %>
 
 <div class="management-links">
-    <a href="/inv/add-classification.ejs">Add New Classification</a>
-    <a href="/inv/add-inventory.ejs">Add New Inventory</a>
+    <a href="/inv/add-classification">Add New Classification</a>
+    <a href="/inv/add-inventory">Add New Inventory</a>
 </div>
 
 <h2>Manage Inventory</h2>
@@ -26,7 +27,7 @@
   <!-- CLASSIFICATION DROP DOWN -->
   <div class="form--fieldset">
     <!-- <label for="classification_id">Select a classification to view inventory:</label> -->
-    <p>Select a classification to view inventory:</p>
+    <p class="drop-select">Select a classification to view inventory:</p>
     <select name="classification_id" id="classificationList">
       <%- classSelect %>
     </select>
@@ -35,4 +36,4 @@
   <noscript>JavaScript must be enabled to use this page.</noscript>
 </div>
 
-<script src="../../public/js/script.js"></script>
+<script src="../../js/script.js"></script>

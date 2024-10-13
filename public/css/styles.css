@@ -287,6 +287,7 @@ h2, h3 {
   background-color: black;
   border: none;
   border-radius: 15px;
+  margin-top: 1em;
 }
 
 /* LOGIN FORM */
@@ -307,11 +308,11 @@ h2, h3 {
   margin-top: -2em;
   margin-bottom: -2em;
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
 }
 .management-links a {
+  font-family: var(--main-font);
   padding: .6em;
   margin: 1em;
   text-decoration: none;
@@ -321,6 +322,11 @@ h2, h3 {
   border: 3px solid rgb(6, 36, 45);
   background-color: rgb(0, 85, 110);
   border-radius: 15px;
+  width: 50%;
+}
+
+.drop-select {
+  color: black!important;
 }
 
 /* ADD CLASSIFICATION FORM */

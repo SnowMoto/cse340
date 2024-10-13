@@ -14,8 +14,6 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const utilities = require("./utilities/")
-const inventoryRoute = require("./routes/inventoryRoute")
-const accountRoute = require("./routes/accountRoute")
 const bodyParser = require("body-parser")
 
 /* ***********************
@@ -58,10 +56,10 @@ app.use(static)
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use("/inv", inventoryRoute)
+app.use("/inv", require("./routes/inventoryRoute"))
 
 // Account route
-app.use("/account", accountRoute)
+app.use("/account", require("./routes/accountRoute"))
 
 
 

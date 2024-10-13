@@ -1,4 +1,4 @@
-<!-- adds h1, good seo, and a heading for the page! -->
+<!--Heading content-->
 <% if (title) { %>
     <h1><%= title %></h1>
   <% } else {
@@ -18,7 +18,7 @@
   <% } %>
   
   <!-- display new inventory form -->
-  <form class="form addvehicle-form" action="/inv/addvehicle" method="post">
+  <form class="form addvehicle-form" action="/inv/add-inventory" method="post">
     <p>*All fields are required</p>
     <fieldset class="form--fieldset addvehicle-form--fieldset"> 
       <!-- drop down menu -->
@@ -57,4 +57,4 @@
       <input type="submit" name="submit" value="Add Vehicle">
     </fieldset>
   </form>
-  <script src="../../public/js/script.js"></script>
+  <script src="../../js/script.js"></script>

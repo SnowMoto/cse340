@@ -1,4 +1,4 @@
-<!-- adds h1, good seo, and a heading for the page! -->
+<!--Heading content-->
 <% if (title) { %>
     <h1><%= title %></h1>
   <% } else {
@@ -18,7 +18,7 @@
   <% } %>
 
   <!-- display class form -->
-  <form class="form addclass-form" action="/inv/addclass" method="post">
+  <form class="form addclass-form" action="/inv/add-classification" method="post">
     <p>*Field is required</p>
     <fieldset class="form--fieldset addclass-form--fieldset"> 
       
@@ -29,4 +29,4 @@
       <input type="submit" value="Add Classification">
     </fieldset>
   </form>
-  <script src="../../public/js/script.js"></script>
+  <script src="../../js/script.js"></script>

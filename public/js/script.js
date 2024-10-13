@@ -1,5 +1,11 @@
-'use strict' 
- 
+// find the form
+const form = document.getElementById("updateForm")
+// add a listeners
+form.addEventListener("change", function () {
+  const updateBtn = document.getElementById("updateBtn")
+  updateBtn.removeAttribute("disabled")
+})
+
 // Get a list of items in inventory based on the classification_id 
 let classificationList = document.querySelector("#classificationList")
 classificationList.addEventListener("change", function () { 
@@ -42,4 +48,3 @@ function buildInventoryList(data) {
   // Display the contents in the Inventory Management view 
   inventoryDisplay.innerHTML = dataTable; 
 }
-
