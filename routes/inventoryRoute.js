@@ -27,7 +27,7 @@ router.post("/add-classification", validate.classRules(), validate.checkClassDat
 router.get("/add-inventory", handleErrors(invController.buildAddvehicle));
   
 // Process the new vehicle data
-router.post("/add-inventory", handleErrors(invController.addVehicle));
+router.post("/add-inventory", invValidate.vehicleRules(), invValidate.checkVehicleData, handleErrors(invController.addVehicle));
   
 // Build inventory management table inventory view
 router.get("/getInventory/:classification_id", handleErrors(invController.getInventoryJSON));
