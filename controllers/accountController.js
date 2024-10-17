@@ -1,6 +1,7 @@
 const accountModel = require("../models/account-model")
 const utilities = require("../utilities/")
 const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 /* ****************************************
@@ -21,12 +22,10 @@ async function buildLogin(req, res, next) {
 * *************************************** */
 async function buildAccount(req, res, next) {
   let nav = await utilities.getNav()
-  let unreadMessages = await messageModel.getUnreadMessageCountByAccountId(res.locals.accountData.account_id)
-  res.render("account/account", {
+  res.render("account/acct-manage", {
     title: "Account",
     nav,
     errors: null,
-    unreadMessages,
   })
 }
 
@@ -89,7 +88,7 @@ async function registerAccount(req, res) {
 }
 
 /* ****************************************
- *  NEW Process login request (post /login)
+ *  NEW Process login request
  * ************************************ */
 async function accountLogin(req, res) {
   let nav = await utilities.getNav()
@@ -104,7 +103,6 @@ async function accountLogin(req, res) {
       errors: null,
       account_email,
     })
-    // no account data? do not pass go, do not collect $200
     return
   }
   try {

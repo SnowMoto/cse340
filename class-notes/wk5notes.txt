@@ -1,0 +1,125 @@
+JWT Components
+Header - the header contains information about how the token is created. It contains the token type ("jwt") and the algorithm used to create it (default is HS256).
+Payload - this is the data to be encoded within the token and is used by the server to identify the client (e.g. the account id and/or type of account). Even though encoded, no sensitive information should be stored in the payload.
+Secret - a secret value that is used in the encoding process. It can be anything, but MUST be stored, usually in an environment variable, where it cannot be accessed from outside the server and cannot be guessed.
+Signature - The combined values of the previous three components. However, using the signature allows the token to be decoded if the secret value is available to be used as a key to unlock the token.
+
+New Login Request
+Lines 1-3 - a multi-line comment for the function.
+Line 4 - opens the async function, and accepts the request and response objects as parameters.
+Line 5 - builds the navigation bar for use in views.
+Line 6 - collects the incoming data from the request body.
+Line 7 - makes a call to a model-based function to locate data associated with an existing email (this function does not yet exist). Returned data, if any, is stored into the "accountData" variable.
+Line 8 - an "if" to test if nothing was returned.
+Line 9 - If the variable is empty, a message is set.
+Line 10 - the response object is used to return the login view to the browser.
+Lines 11-14 - data to be returned to the view. Note that the password is NOT part of the clientData object..
+Line 15 - closes the data object and render function.
+Line 16 - return control back to the project process.
+Line 17 - ends the "if" test.
+Line 18 - opens a try-catch block.
+Line 19 - uses the bcrypt.compare() function which takes the incoming, plain text password and the hashed password from the database and compares them to see if they match. (The plain text password is hashed using the same algorithm and secret used with the original password. The two hashes are compared to see if they match.) The resulting "TRUE" or "FALSE" is evaluated by the "if".
+Line 20 - If the passwords match, then the JavaScript delete function is used to remove the hashed password from the accountData array.
+Line 21 - the JWT token is created. The accountData is inserted as the payload. The secret is read from the .env file. When the token is ready, it is stored into an "accessToken" variable. Note! The token expiration must be set in seconds. Thus, 60 seconds x 60 minutes = 3600 seconds. In short, the token will be given a life of 1 hour, measured in seconds.
+Line 22 - checks to see if the development environment is "development" (meaning local for testing). If TRUE, a new cookie is created, named "jwt", the JWT token is stored in the cookie, and the options of "httpOnly: true" and "maxAge: 3600 * 1000" are set. This means that the cookie can only be passed through the HTTP protocol and cannot be accessed by client-side JavaScript. It will also expire in 1 hour.
+Line 24 - an "else", (meaning the the environment is not "development"), then the cookie is created with the same name and token, but with the added option of "secure: true". This means that the cookie can only be passed through HTTPS and not HTTP. This is a security measure to ensure that the cookie is not passed through an unsecured connection.
+Line 26 - ends the if - else structure to create the correct form of the cookie.
+Line 27 - the application then redirects to the default account route. This should deliver an account management view (you'll create this later in this activity).
+Line 28 - ends the if block begun on line 19.
+Line 29 - ends the try block and begins the catch block and stores any errors in the "error" variable.
+Line 30 - an error will occur if the passwords do not match and the token and cookie cannot be created. A new error is created and should be picked up by the error handler.
+Line 31 - ends the catch block.
+Line 32 - ends the function.
+
+Return account email
+Lines 1-3 - a multi-line comment
+Line 4 - creates the function, makes it asyncronous, and adds the client_email as a parameter.
+Line 5 - begins a try - catch block.
+Line 6 - creates a variable to store the results of the query.
+Line 7 - a SQL SELECT query using the parameterized statement syntax. This is the first argument in the pool.query function.
+Line 8 - passes in the client_email, as an array element to replace the placeholder at the end of the SQL statement. This is the second argument in the pool.query function. That function ends on this line.
+Line 9 - sends the first record, from the result set returned by the query, back to where this function was called.
+Line 10 - ends the "try" block and begins the "catch" block, with the "error" variable to store any errors that are thrown by the "try" block.
+Line 11 - sends the error, if any, to the console for review.
+Line 12 - ends the "catch" block.
+Line 13 - ends the function.
+
+Check token
+Lines 1-3 - a multi-line comment for the function.
+Line 4 - begins the function and assigns it to the "checkJWTToken" property of the Util object. The function accepts the request, response and next parameters.
+Line 5 - an "if" check to see if the JWT cookie exists.
+Line 6 - if the cookie exists, uses the jsonwebtoken "verify" function to check the validity of the token. The function takes three arguments: 1) the token (from the cookie), 2) the secret value stored as an environment variable, and 3) a callback function.
+Line 7 - the JWT token from the cookie.
+Line 8 - the "secret" which is stored in the .env file.
+Line 9 - the callback function (which returns an error or the account data from the token payload).
+Line 10 - an "if" to see if an error exists.
+Line 11 - if an error, meaning the token is not valid, a flash message is created.
+Line 12 - the cookie is deleted.
+Line 13 - redirects to the "login" route, so the client can "login".
+Line 14 - ends the "if" started on line 10.
+Line 15 - adds the accountData object to the response.locals object to be forwarded on through the rest of this request - response cycle.
+Line 16 - adds "loggedin" flag with a value of "1" (meaning true) to the response.locals object to be forwarded on through the rest of this request - response cycle.
+Line 17 - calls the "next()" function directing the Express server to move to the next step in the application's work flow.
+Line 18 - ends the callback function and the jwt.verify function.
+Line 19 - ends the "if" started on line 5 and begins an "else" block.
+Line 20 - calls the next() function, to move forward in the application process. In this case, there is no JWT cookie, so the process moves to the next step.
+Line 21 - ends the "else" block.
+Line 22 - ends the middleware function, started on line 4.
+
+Get list of inventory route
+Line 1: the 'use strict' directive tells the JavaScript parser to follow all rules strictly.
+Line 3: A comment about the code.
+Line 4: Finds the classification select element in the inventory management view, based on its ID, and stores its reference into a local JavaScript variable.
+Line 5: Attaches the eventListener to the variable representing the classification select element and listens for any "change". When a change occurs an anonymous function is executed.
+Line 6: Captures the new value from the classification select element and stores it into a JavaScript variable.
+Line 7: Writes the value as part of a string to the console log for testing purposes. Note that the text is surrounded by "ticks", not single quotes. The "tick" key is to the left of the 1 on your keyboard. Text that is surrounded by ticks is known as a JavaScript template literal. A JavaScript template literal allows the value of a variable to be rendered within a string without the use of concatenation.
+Line 8: The URL that will be used to request inventory data from the inventory controller. Notice the parameter of the classification_id at the end.
+Line 9: The JavaScript "Fetch" which is a modern method of initiating an AJAX request.
+Line 10: A "then" method that waits for data to be returned from the fetch. The response object is passed into an anonymous function for processing.
+Line 11: An "if" test to see if the response was retuned successfully. If not, the error on line 14 occurs.
+Line 12: If the response was successful, then the JSON object that was returned is converted to a JavaScript object and passed on to the next "then" statement on line 16.
+Line 13: Ends the "if" test begun on line 11.
+Line 14: The error that occurs if the "if" test (line 11) fails.
+Line 15: Ends the "then" process begun on line 10.
+Line 16: Accepts the JavaScript object from line 12, and passes it as a parameter into an anonymous function.
+Line 17: Sends the JavaScript object to the console log for testing purposes.
+Line 18: Sends the JavaScript object to a new function that will parse the data into HTML table elements and inject them into the inventory management view.
+Line 19: Ends the "then" process which began on line 16.
+Line 20: A "catch" which captures any errors and sends them into an anonymous function.
+Line 21: Writes the caught error to the console log for us to see for troubleshooting.
+Line 22: Ends the "catch" begun on line 20.
+Line 23: Ends the eventListener.
+
+Build inventory list route
+Line 1: A comment about the function's operation
+Line 2: Declares the function and indicates the JavaScript object is a required parameter.
+Line 3: Reaches into the HTML document, uses the ID to capture the element and assigns it to a JavaScript variable for use later.
+Line 4: A comment concerning lines 5 through 7.
+Line 5: Creates a JavaScript variable and stores the beginning HTML element into it as a string.
+Line 6: Creates the table row and three table cells as a string and appends it to the variable created on line 5.
+Line 7: Adds the closing thead element to the variable using the append operator.
+Line 8: A comment concerning lines 9 through 17.
+Line 9: Appends the opening tbody tag to the string stored in the variable.
+Line 10: A comment about lines 11 through 16.
+Line 11: Implements the foreach method on the data object. Each element in the object is sent into an anonymous function as a parameter.
+Line 12: Sends the name and id of each element to the console log for testing purposes.
+Line 13: Creates a table cell with the vehicle name and appends it to the variable.
+Line 14: Creates a table cell with a link to begin the update process for this item (note the inclusion of the action indicator and inv_id in the URL) and appends it to the variable.
+Line 15: Creates a table cell with a link to begin the delete process for this item (note the inclusion of similar items as in the update path) and appends it to the variable.
+Line 16: Ends the forEach loop and its embeded anonymous function.
+Line 17: Appends the closing tbody element to the variable.
+Line 18: A comment about line 19.
+Line 19: Injects the finished table components into the inventory management view DOM element that was identified on line 3.
+Line 20: Ends the function.
+
+Controller to return inventory
+Lines 1-3 - a multi-line comment for the function.
+Line 4 - the opening of the function.
+Line 5 - collects and stores the classification_id that has been passed as a parameter through the URL. Uses the JavaScript parseInt() function to cast it as an integer, which is also a security step.
+Line 6 - calls the model-based function to get the data based on the classification_id.
+Line 7 - checks to make sure there is a value in the first element of the array being returned.
+Line 8 - if data is present, returns the result set as a JSON object.
+Line 9 - ends the "if" check and opens an "else" structure.
+Line 10 - throws an error for the Express error handler if no data is found.
+Line 11 - ends the "else" structure.
+Line 12 - ends the function.

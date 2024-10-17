@@ -15,27 +15,17 @@ router.get("/login", handleErrors(accountController.buildLogin));
 router.get("/register", handleErrors(accountController.buildRegister));
 
 // Process the registration data
-router.post(
-    "/register",
-    regValidate.registationRules(),
-    regValidate.checkRegData,
-    handleErrors(accountController.registerAccount)
-  )
+router.post("/register", regValidate.registationRules(),
+regValidate.checkRegData, handleErrors(accountController.registerAccount));
 
 // Process the login attempt
-router.post(
-    "/login",
-    (req, res) => {
-      res.status(200).send('login process')
-    }
-  )
+router.post("/login", regValidate.loginRules(),
+  regValidate.checkLoginData,handleErrors(accountController.accountLogin));
 
 // Route to build account login view
 router.get("/edit/:account_id", handleErrors(accountController.buildEditAccount));
 
-router.get(
-  "/logout",
-  handleErrors(accountController.logoutAccount),
-)
+//Route to logout
+router.get("/logout", handleErrors(accountController.logoutAccount));
 
 module.exports = router

@@ -235,7 +235,12 @@ h2, h3 {
 .form label, p {
   font-family: var(--main-font);
   color:white;
-  margin-bottom: .1em;
+  padding: .1em 0 0 1em;
+}
+
+.form label, a{
+  font-weight: bold;
+  color: rgb(133, 226, 255);
 }
 
 .form--fieldset:first-child p {
@@ -302,13 +307,10 @@ h2, h3 {
   color: rgb(133, 226, 255);
 }
 
-/* MANAGEMENT PAGE */
+/* MANAGEMENT & ACCOUNT PAGE */
 .management-links {
   padding: 1em;
-  margin-top: -2em;
-  margin-bottom: -2em;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
 }
 .management-links a {
@@ -329,6 +331,14 @@ h2, h3 {
   color: black!important;
 }
 
+.account, .login-name {
+  text-align: center;
+}
+
+.account {
+  font-size: 1rem !important;
+}
+
 /* ADD CLASSIFICATION FORM */
 .addclass-form p:first-child {
   text-align: center;
@@ -344,4 +354,16 @@ h2, h3 {
 }
 .addvehicle-form--fieldset input[type="submit"] {
   margin-bottom: 1em;
+}
+
+#inventoryDisplay {
+  font-family: var(--main-font);
+  padding: 1em;
+  margin-left: 2em;
+  border-spacing: 1em;
+}
+
+.update {
+  font-weight: 400 !important;
+  color: black !important;
 }

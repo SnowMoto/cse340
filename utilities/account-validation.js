@@ -53,7 +53,7 @@ const validate = {}
   }
 
   /* ******************************
- * Check data and return errors or continue to registration
+ * Check data and return errors
  * ***************************** */
 validate.checkRegData = async (req, res, next) => {
     const { account_firstname, account_lastname, account_email } = req.body
@@ -74,4 +74,49 @@ validate.checkRegData = async (req, res, next) => {
     next()
   }
   
+  /*  **********************************
+ *  LOGIN Data Validation Rules
+ * ********************************* */
+validate.loginRules = () => {
+  return [
+    // valid email is required and must already exist in the DB
+    body("account_email")
+      .trim()
+      .isEmail()
+      .normalizeEmail() // refer to validator.js docs
+      .withMessage("Please enter a valid email."),
+
+    // password must match pattern validation
+    // and must match the correct password for the account
+    body("account_password")
+      .trim()
+      .whitelist(/^[0-9a-zA-Z?!.*@]*$/)
+      .isLength({ min: 12 })
+      .withMessage('Incorrect password'),
+  ]
+}
+
+/* ******************************
+ * Check data and return errors or continue to LOGIN
+ * ***************************** */
+validate.checkLoginData = async (req, res, next) => {
+  const { account_email } = req.body
+  let errors = []
+  errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    // if there are errors, refresh the page and 
+    // keep input values in form inputs
+    // *NEVER includes passwords*
+    let nav = await utilities.getNav()
+    res.render("account/login", {
+      errors,
+      title: "Login",
+      nav,
+      account_email,
+    })
+  }
+  next()
+}
+
   module.exports = validate

@@ -67,4 +67,9 @@
         width: auto;
         max-height: 14em;
       }
+
+/* account management*/
+    .account {
+      font-size: 2rem!important;
+    }      
 }

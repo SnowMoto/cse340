@@ -65,3 +65,12 @@ WHERE inv_id = 10;
 UPDATE public.inventory
 SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
 	inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+
+/*Week 5 change database happy and manager*/
+UPDATE public.account
+SET account_type = 'Employee'
+WHERE account_id = 2;
+
+UPDATE public.account
+SET account_type = 'Admin'
+WHERE account_id = 3;
