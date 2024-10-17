@@ -21,13 +21,13 @@ router.get("/", handleErrors(invController.buildManagement));
 router.get("/add-classification", handleErrors(invController.buildAddclass));
   
 // Process the new classification data
-router.post("/add-classification", validate.classRules(), validate.checkClassData(),  handleErrors(invController.addClass));
+router.post("/add-classification", validate.classRules(), validate.checkClassData, handleErrors(invController.addClass));
   
 // Route to build add vehicle view
 router.get("/add-inventory", handleErrors(invController.buildAddvehicle));
   
 // Process the new vehicle data
-router.post("/add-inventory", invValidate.vehicleRules(), invValidate.checkVehicleData, handleErrors(invController.addVehicle));
+router.post("/add-inventory", validate.vehicleRules(), validate.checkVehicleData, handleErrors(invController.addVehicle));
   
 // Build inventory management table inventory view
 router.get("/getInventory/:classification_id", handleErrors(invController.getInventoryJSON));
