@@ -25,6 +25,15 @@ router.post("/login", regValidate.loginRules(),
 // Route to build account login view
 router.get("/edit/:account_id", handleErrors(accountController.buildEditAccount));
 
+// Process the updated account information
+router.post("/accountupdate", regValidate.updateAccountRules(), regValidate.checkEditAccountData, 
+handleErrors(accountController.editAccountInfo));
+
+// Process the account password change
+router.post("/changepassword", regValidate.changePasswordRules(), regValidate.checkEditAccountData, 
+handleErrors(accountController.editAccountPassword));
+
+
 //Route to logout
 router.get("/logout", handleErrors(accountController.logoutAccount));
 
