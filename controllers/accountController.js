@@ -1,4 +1,5 @@
 const accountModel = require("../models/account-model")
+const messageModel = require("../models/messages-model")
 const utilities = require("../utilities/")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
@@ -18,14 +19,15 @@ async function buildLogin(req, res, next) {
 
 /* ****************************************
 *  Deliver default account view 
-*  (get (route = account/) == (view = account/account))
 * *************************************** */
 async function buildAccount(req, res, next) {
   let nav = await utilities.getNav()
+  let unreadMessages = await messageModel.getUnreadMessageCountByAccountId(res.locals.accountData.account_id)
   res.render("account/acct-manage", {
     title: "Account",
     nav,
     errors: null,
+    unreadMessages,
   })
 }
 

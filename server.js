@@ -66,6 +66,8 @@ app.use("/inv", require("./routes/inventoryRoute"))
 // Account route
 app.use("/account", require("./routes/accountRoute"))
 
+//Inbox Route
+app.use("/inbox", require("./routes/messageRoute"))
 
 
 // File Not Found Route - must be last route in list

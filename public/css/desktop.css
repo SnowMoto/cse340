@@ -72,4 +72,8 @@
     .account {
       font-size: 2rem!important;
     }      
+
+    .alert {
+      font-size: 1em;
+    }
 }

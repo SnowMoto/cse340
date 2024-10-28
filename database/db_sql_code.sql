@@ -74,3 +74,34 @@ WHERE account_id = 2;
 UPDATE public.account
 SET account_type = 'Admin'
 WHERE account_id = 3;
+
+/*Messages final project*/
+/*Create a message table*/
+CREATE TABLE IF NOT EXISTS public.message
+(
+    message_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START CACHE 1 ),
+    message_to integer NOT NULL,
+    message_from integer NOT NULL,
+    message_subject character varying COLLATE pg_catalog."default" NOT NULL,
+    message_body text COLLATE pg_catalog."default" NOT NULL,
+    message_created timestamp with time zone NOT NULL DEFAULT now(),
+    message_read boolean NOT NULL DEFAULT false,
+    message_archived boolean NOT NULL DEFAULT false,
+    CONSTRAINT message_pkey PRIMARY KEY (message_id)
+);
+
+/*Create realtion between messages_to and account_id*/
+ALTER TABLE IF EXISTS public.message
+    ADD CONSTRAINT message_to_fk FOREIGN KEY (message_to)
+    REFERENCES public.account (account_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+/*Create realtion between messages_from and account_id*/
+ALTER TABLE IF EXISTS public.message
+    ADD CONSTRAINT message_from_fk FOREIGN KEY (message_from)
+    REFERENCES public.account (account_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;

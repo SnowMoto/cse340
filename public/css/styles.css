@@ -332,12 +332,18 @@ h2, h3 {
   color: black!important;
 }
 
-.account, .login-name {
+.account, .login-name, .alert {
   text-align: center;
 }
 
 .account {
-  font-size: 1rem !important;
+  font-size: 1em !important;
+  color: black;
+}
+
+.alert {
+  font-size: .5em;
+  color: black;
 }
 
 /* ADD CLASSIFICATION FORM */

@@ -23,6 +23,11 @@
   <div class="management-links">
     <a href="/account/edit/<%= locals.accountData.account_id %>">Manage Your Account Information</a>
   </div>
+  <h2 class="account">Message Center</h2>
+  <p class="alert">Unread Messages = <%= locals.unreadMessages %></p>
+  <div class="management-links">
+    <a href="/inbox/">Inbox</a>
+  </div>
   <% if (account.account_type == "Employee" || account.account_type == "Admin") { %>
     <h3 class="login-name">Inventory Management</h3>
     <div class="management-links">
