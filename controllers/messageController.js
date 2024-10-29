@@ -3,9 +3,9 @@ const utilities = require("../utilities/")
 require("dotenv").config()
 
 /* ****************************************
-*  Deliver inbox view 
+*  Deliver inbox view (get /, inbox/inxbox)
 * *************************************** */
-async function inboxView(req, res, next) {
+async function buildInbox(req, res, next) {
   let nav = await utilities.getNav()
   let inboxMessages = await utilities.getAccountMessages(res.locals.accountData.account_id)
   let archivedMessageCount = await messageModel.getArchivedMessageCountByAccountId(res.locals.accountData.account_id)
@@ -19,9 +19,9 @@ async function inboxView(req, res, next) {
 }
 
 /* ****************************************
-*  Deliver archived messages view
+*  Deliver archived messages view (get /archivedmessages, inbox/archivedmessages)
 * *************************************** */
-async function archivedView(req, res, next) {
+async function buildArchivedMessages(req, res, next) {
   let nav = await utilities.getNav()
   let archivedMessages = await utilities.getArchivedMessages(res.locals.accountData.account_id)
   res.render("inbox/archive", {
@@ -33,9 +33,9 @@ async function archivedView(req, res, next) {
 }
 
 /* ****************************************
-*  Deliver send message view
+*  Deliver send message view (get /send, inbox/sendmessage)
 * *************************************** */
-async function sendView(req, res, next) {
+async function buildSendMessage(req, res, next) {
   let nav = await utilities.getNav()
   let accountSelect = await utilities.getAccountSelect()
   res.render("inbox/send", {
@@ -47,42 +47,51 @@ async function sendView(req, res, next) {
 }
 
 /* ****************************************
-*  Process and send new message
+*  Process and send new message (post /send)
 * *************************************** */
 async function sendMessage(req, res) {
-  let nav = await utilities.getNav()
-  const { message_to, message_from, message_subject, message_body } = req.body
-  const regResult = await messageModel.sendNewMessage(message_to, message_from, message_subject, message_body)
+  let nav = await utilities.getNav();
+  const { message_to, message_from, message_subject, message_body, shouldArchive } = req.body;
+
+  // Pass (message_to, message_from, message_subject, message_body) to model INSERT statement
+  const regResult = await messageModel.sendNewMessage(message_to, message_from, message_subject, message_body);
+  
   if (regResult) {
-    let archivedMessageCount = await messageModel.getArchivedMessageCountByAccountId(res.locals.accountData.account_id)
-    let inboxMessages = await utilities.getAccountMessages(res.locals.accountData.account_id)
-    req.flash("success", `Your message was sent successfully.`)
+    // Archive the message if shouldArchive is true
+    if (shouldArchive) {
+      await messageModel.archiveMessage(regResult.rows[0].message_id); // assuming regResult returns the inserted message
+    }
+    
+    let archivedMessageCount = await messageModel.getArchivedMessageCountByAccountId(res.locals.accountData.account_id);
+    let inboxMessages = await utilities.getAccountMessages(res.locals.accountData.account_id);
+    req.flash("success", `Your message was sent successfully.`);
     res.status(201).render("inbox/inbox", {
       title: "Inbox",
       nav,
       errors: null,
       archivedMessageCount,
       inboxMessages,
-    })
+    });
   } else {
-    let accountSelect = await utilities.getAccountSelect(message_to)
-    req.flash("error", "Your message got lost in delivery.")
+    let accountSelect = await utilities.getAccountSelect(message_to);
+    req.flash("error", "Your message got lost in delivery.");
     res.status(501).render("inbox/send", {
       title: "New Message",
       nav,
       errors: null,
-      accountSelect: accountSelect, 
-      message_from: message_from, 
-      message_subject: message_subject, 
+      accountSelect: accountSelect,
+      message_from: message_from,
+      message_subject: message_subject,
       message_body: message_body,
-    })
+    });
   }
 }
 
+
 /* ****************************************
-*  Deliver read message view
+*  Deliver viewmessage view (get /view/:message_id, inbox/viewmessage)
 * *************************************** */
-async function readMessageView(req, res, next) {
+async function buildViewMessage(req, res, next) {
   let message_id = parseInt(req.params.message_id)
   let message = await messageModel.getMessageById(message_id)
   let messageData = message.rows[0]
@@ -100,9 +109,9 @@ async function readMessageView(req, res, next) {
 }
 
 /* ****************************************
-*  Deliver reply message view (get /reply/:message_id, inbox/replymessage)
+*  Deliver replymessage view (get /reply/:message_id, inbox/replymessage)
 * *************************************** */
-async function replyMessageView(req, res, next) {
+async function buildReplyMessage(req, res, next) {
   let message_id = parseInt(req.params.message_id)
   let message = await messageModel.getMessageById(message_id)
   let messageData = message.rows[0]
@@ -113,6 +122,8 @@ async function replyMessageView(req, res, next) {
     errors: null,
     account_firstname: messageData.account_firstname,
     account_lastname: messageData.account_lastname,
+    // message_subject: messageData.message_subject,
+    // message_body: messageData.message_body,
     message_to: messageData.message_to,
     message_from: messageData.message_from,
     message_subject: messageData.message_subject,
@@ -121,13 +132,15 @@ async function replyMessageView(req, res, next) {
 }
 
 /* ****************************************
-*  Process and send new reply 
+*  Process and send new reply (post /reply)
 * *************************************** */
 async function replyMessage(req, res) {
   let nav = await utilities.getNav()
   const { message_to, message_from, message_subject, message_body, reply_message } = req.body
   const newSubject = `Re:${message_subject}`
   const newMessageBody = `${message_body} Re:${reply_message}`
+  // pass (message_to, message_from, message_subject, message_body) to model INSERT statement
+  // swap message_from and message_to to update sender and reciever info
   const regResult = await messageModel.sendNewMessage(message_from, message_to, newSubject, newMessageBody)
   if (regResult) {
     let archivedMessageCount = await messageModel.getArchivedMessageCountByAccountId(res.locals.accountData.account_id)
@@ -141,7 +154,9 @@ async function replyMessage(req, res) {
       inboxMessages,
     })
   } else {
+    // let accountSelect = await utilities.getAccountSelect(message_to)
     req.flash("error", "Your reply got lost in delivery.")
+    // render account edit view again
     res.status(501).render("inbox/reply", {
       title: "Reply",
       nav,
@@ -180,7 +195,8 @@ async function readMessage(req, res, next) {
     let message = await messageModel.getMessageById(message_id)
     let messageData = message.rows[0]
     req.flash("error", "Mark as read failed.")
-    res.status(501).render("inbox/read", {
+    // render view message view again
+    res.status(501).render("inbox/reaD", {
       title: `${messageData.message_subject}`,
       nav,
       errors: null,
@@ -194,7 +210,7 @@ async function readMessage(req, res, next) {
 }
 
 /* ****************************************
-*  process message_archived update 
+*  process message_archived update (get /archive/:message_id)
 * *************************************** */
 async function archiveMessage(req, res, next) {
   let nav = await utilities.getNav()
@@ -216,6 +232,7 @@ async function archiveMessage(req, res, next) {
     let message = await messageModel.getMessageById(message_id)
     let messageData = message.rows[0]
     req.flash("error", "Message archive failed.")
+    // render view message view again
     res.status(501).render("inbox/read", {
       title: `${messageData.message_subject}`,
       nav,
@@ -266,4 +283,4 @@ async function deleteMessage(req, res, next) {
   }
 }
 
-module.exports = { inboxView, archivedView, sendView, sendMessage, readMessageView, replyMessageView, replyMessage, readMessage, archiveMessage, deleteMessage }
+module.exports = { buildInbox, buildArchivedMessages, buildSendMessage, sendMessage, buildViewMessage, buildReplyMessage, replyMessage, readMessage, archiveMessage, deleteMessage }

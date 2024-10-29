@@ -1,5 +1,11 @@
 const pool = require("../database/")
 
+/* *****************************
+*   Get all accounts (SELECT)
+* *************************** */
+async function getAccounts() {
+  return await pool.query("SELECT * FROM public.account ORDER BY account_email")
+}
 
 /* *****************************
 *   Register new account (INSERT)
@@ -14,10 +20,12 @@ async function registerAccount(account_firstname, account_lastname, account_emai
 }
 
 /* **********************
- *   Check for existing email
+ * Check for existing email
+ * Used for registration, func == registerAccount (desired output == 0)
  * ********************* */
 async function checkExistingEmail(account_email){
   try {
+    // get account info on account_email, returns 0 or 1
     const sql = "SELECT * FROM account WHERE account_email = $1"
     const email = await pool.query(sql, [account_email])
     return email.rowCount
@@ -27,21 +35,26 @@ async function checkExistingEmail(account_email){
 }
 
 /* *****************************
-* Return account data by email
+* Return account data using email address
+* Used for logging in, func == accountLogin (desired output == 1)
 * ***************************** */
 async function getAccountByEmail (account_email) {
   try {
+    // get account info on account_email, returns 0 or 1 AND all account info
     const result = await pool.query(
       'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password FROM account WHERE account_email = $1',
       [account_email])
+    
     return result.rows[0]
   } catch (error) {
+    // return if rows == 0
     return new Error("No matching email found")
   }
 }
 
 /* *****************************
-* Return account data by id
+* Return account data using email address
+* Used for logging in, func == accountLogin (desired output == 1)
 * ***************************** */
 async function getAccountById(account_id) {
   try {
@@ -89,4 +102,4 @@ async function changeAccountPassword(account_password, account_id) {
   }
 }
 
-module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, changeAccountPassword, updateAccountInfo }
+module.exports = { getAccounts, registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, changeAccountPassword, updateAccountInfo }

@@ -1,15 +1,15 @@
 const invModel = require("../models/inventory-model")
 const accountModel = require("../models/account-model")
+const messageModel = require("../models/messages-model")
 const Util = {}
 const jwt = require("jsonwebtoken")
-require('dotenv').config()
+require("dotenv").config()
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function (req, res, next) {
   let data = await invModel.getClassifications()
-  console.log(data)
   let list = "<ul>"
   list += '<li><a href="/" title="Home page">Home</a></li>'
   data.rows.forEach((row) => {
@@ -19,7 +19,7 @@ Util.getNav = async function (req, res, next) {
       row.classification_id +
       '" title="See our inventory of ' +
       row.classification_name +
-      ' Vehicles">' +
+      ' vehicles">' +
       row.classification_name +
       "</a>"
     list += "</li>"
@@ -55,6 +55,7 @@ Util.buildClassificationGrid = async function(data){
       grid += '</li>'
     })
     grid += '</ul>'
+
   } else { 
     grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
@@ -69,13 +70,13 @@ Util.buildVehicleGrid = async function(data){
   let vehicle = data[0]
   if(data){
     // open single vehicle view wrapper
-    grid = '<div id="vehicle">'
+    grid = '<div id="singleVehicleWrapper">'
     // image with alt
     grid += '<img src="' + vehicle.inv_image 
     + '" alt="Image of ' + vehicle.inv_year 
     + vehicle.inv_make + vehicle.inv_model + '">'
     // open unordered list for vehicle data
-    grid += '<ul id="details">'
+    grid += '<ul id="singleVehicleDetails">'
     // vehicle subtitle
     grid += '<li><h2>' 
     + vehicle.inv_make + ' ' + vehicle.inv_model 
@@ -107,25 +108,6 @@ Util.buildVehicleGrid = async function(data){
 Util.buildBrokenPage = function(){
   let broken = ''
   return broken
-}
-
-/* ****************************************
- * Middleware For Handling Errors
- * Wrap other function in this for 
- * General Error Handling
- **************************************** */
-Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
-
-/* ****************************************
- *  Check Login
- * ************************************ */
-Util.checkLogin = (req, res, next) => {
-  if (res.locals.loggedin) {
-    next()
-  } else {
-    req.flash("notice", "Please log in.")
-    return res.redirect("/account/login")
-  }
 }
 
 /* ************************
@@ -161,6 +143,13 @@ Util.getAccountSelect = async function (selectedOption) {
 }
 
 /* ****************************************
+ * Middleware For Handling Errors
+ * Wrap other function in this for 
+ * General Error Handling
+ **************************************** */
+Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
+/* ****************************************
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
@@ -188,6 +177,18 @@ Util.checkJWTToken = (req, res, next) => {
 }
 
 /* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+}
+
+/* ****************************************
  *  Check user authorization, block unauthorized users
  * ************************************ */
 Util.checkAuthorization = async (req, res, next) => {
@@ -208,6 +209,70 @@ Util.checkAuthorization = async (req, res, next) => {
   } else {
     next()
   }
+}
+
+/* ************************
+ * Constructs unarchived messages on account_id
+ ************************** */
+Util.getAccountMessages = async function (account_id) {
+  let data = await messageModel.getMessagesByAccountId(account_id)
+  let dataTable
+  if (data.rowCount === 0) {
+    dataTable = '<h3>No new messages</h3>'
+  } else {
+    dataTable = '<table id="inboxMessagesDisplay"><thead>'; 
+    dataTable += '<tr><th>Read</th><th>Recieved</th><th>Subject</th><th>From</th></tr>'; 
+    dataTable += '</thead>'; 
+    // Set up the table body 
+    dataTable += '<tbody>'; 
+    // Iterate over all messages in the array and put each in a row 
+    data.rows.forEach((row => { 
+      dataTable += `<tr><td><div class="bubble` 
+        if (row.message_read) {
+          dataTable += ` true"`
+        } else {
+          dataTable += ` false"`
+        }
+      dataTable += `></div></td>`; 
+      dataTable += `<td>${row.message_created.toLocaleString('en-US', 'narrow')}</td>`; 
+      dataTable += `<td><a href='/inbox/view/${row.message_id}' title='Click to view message'>${row.message_subject}</a></td>`;
+      dataTable += `<td>${row.account_firstname} ${row.account_lastname}</td></tr>`;
+    })) 
+    dataTable += '</tbody></table>'; 
+  }
+  return dataTable
+}
+
+/* ************************
+ * Constructs archived messages on account_id
+ ************************** */
+Util.getArchivedMessages = async function (account_id) {
+  let data = await messageModel.getArchivedMessagesByAccountId(account_id)
+  let dataTable
+  if (data.rowCount === 0) {
+    dataTable = '<h3>No archived messages</h3>'
+  } else {
+    dataTable = '<table id="inboxMessagesDisplay"><thead>'; 
+    dataTable += '<tr><th>Read</th><th>Recieved</th><th>Subject</th><th>From</th></tr>'; 
+    dataTable += '</thead>'; 
+    // Set up the table body 
+    dataTable += '<tbody>'; 
+    // Iterate over all messages in the array and put each in a row 
+    data.rows.forEach((row => {
+      dataTable += `<tr><td><div class="bubble` 
+        if (row.message_read) {
+          dataTable += ` true"`
+        } else {
+          dataTable += ` false"`
+        }
+      dataTable += `></div></td>`; 
+      dataTable += `<td>${row.message_created.toLocaleString('en-US', 'narrow')}</td>`;
+      dataTable += `<td><a href='/inbox/view/${row.message_id}' title='Click to view message'>${row.message_subject}</a></td>`;
+      dataTable += `<td>${row.account_firstname} ${row.account_lastname}</td></tr>`;
+    })) 
+    dataTable += '</tbody></table>'; 
+  }
+  return dataTable
 }
 
 module.exports = Util

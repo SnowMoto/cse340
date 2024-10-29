@@ -35,7 +35,7 @@ validate.checkMessageData = async (req, res, next) => {
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav()
     let accountSelect = await utilities.getAccountSelect(message_to)
-    res.render("../inbox/send", {
+    res.render("inbox/send", {
       errors,
       title: "New Message",
       nav,
@@ -71,7 +71,7 @@ validate.checkReplyData = async (req, res, next) => {
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav()
     let fromAccount = await accountModel.getAccountById(message_from)
-    res.render("../inbox/reply", {
+    res.render("inbox/reply", {
       errors,
       title: "Reply",
       nav,

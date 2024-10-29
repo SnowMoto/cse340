@@ -20,8 +20,8 @@
 
 <!-- send new message /account/send -->
 <div class="management-links">
-  <a href="./send.ejs">Send Message</a>
-  <a href="./archive.ejs">View archived messages (<%= locals.archivedMessageCount %>)</a>
+  <a href="/inbox/send">Send Message</a>
+  <a href="/inbox/archive">View archived messages (<%= locals.archivedMessageCount %>)</a>
 </div>
 
 <%- inboxMessages %>

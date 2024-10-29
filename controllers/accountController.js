@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 /* ****************************************
-*  Deliver login view
+*  Deliver login view 
 * *************************************** */
 async function buildLogin(req, res, next) {
   let nav = await utilities.getNav()
@@ -32,7 +32,7 @@ async function buildAccount(req, res, next) {
 }
 
 /* ****************************************
-*  Deliver registration view
+*  Deliver registration view (get /register)
 * *************************************** */
 async function buildRegister(req, res, next) {
   let nav = await utilities.getNav()
@@ -95,6 +95,9 @@ async function registerAccount(req, res) {
 async function accountLogin(req, res) {
   let nav = await utilities.getNav()
   const { account_email, account_password } = req.body
+
+  // gABE returns row count == 0 || == 1 
+  // ? 0 -> return error ? 1 return * accountData
   const accountData = await accountModel.getAccountByEmail(account_email)
 
   if (!accountData) {
@@ -105,6 +108,7 @@ async function accountLogin(req, res) {
       errors: null,
       account_email,
     })
+    // no account data? do not pass go, do not collect $200
     return
   }
   try {
@@ -130,8 +134,9 @@ async function accountLogin(req, res) {
     return error
   }
 }
+
 /* ****************************************
-*  Deliver update account information view 
+*  Deliver edit account information view 
 * *************************************** */
 async function buildEditAccount(req, res, next) {
   let nav = await utilities.getNav()
@@ -167,7 +172,7 @@ async function editAccountInfo(req, res) {
     res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
 
     req.flash("success", `Congratulations, ${account_firstname} you\'ve succesfully updated your account info.`)
-    res.status(201).render("account/account", {
+    res.status(201).render("account/acct-manage", {
       title: "Edit Account Information",
       nav,
       errors:null,
@@ -215,7 +220,7 @@ async function editAccountPassword(req, res) {
   if (regResult) {
     const account = await accountModel.getAccountById(account_id)
     req.flash("success", `Congratulations, ${account_firstname} you\'ve succesfully updated your account info.`)
-    res.status(201).render("account/account", {
+    res.status(201).render("account/acct-manage", {
       title: "Edit Account Information",
       nav,
       errors:null,

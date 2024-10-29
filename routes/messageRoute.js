@@ -4,29 +4,35 @@ const messageController = require("../controllers/messageController")
 const { handleErrors } = require("../utilities")
 const validate = require("../utilities/message-validation")
 
+// INDEX
 // Route to build inbox/inbox view
-router.get("/inbox", handleErrors(messageController.inboxView));
+router.get("/", handleErrors(messageController.buildInbox));
 
-// Route to build inbox/archived view
-router.get("/archive", handleErrors(messageController.archivedView));
+// ARCHIVED MESSAGES
+// Route to build inbox/archive view
+router.get("/archive", handleErrors(messageController.buildArchivedMessages));
 
-// Route to build inbox/sent view
-router.get("/send", handleErrors(messageController.sendView));
+// SEND
+// Route to build inbox/send view
+router.get("/send", handleErrors(messageController.buildSendMessage));
 
-// Route to build inbox/sent view
+// Route to build inbox/send message view
 router.post("/send", validate.messageRules(), validate.checkMessageData,
   handleErrors(messageController.sendMessage));
 
-// Route to build inbox/read message view
-router.get("/read/:message_id", handleErrors(messageController.readMessageView));
+// VIEW
+// Route to build inbox/read view
+router.get("/view/:message_id", handleErrors(messageController.buildViewMessage));
+
+// REPLY
+// Route to build account reply message view
+router.get("/reply/:message_id", handleErrors(messageController.buildReplyMessage));
 
 // Route to build account reply message view
-router.get("/reply/:message_id", handleErrors(messageController.replyMessageView));
+router.post("/reply", validate.replyRules(), validate.checkReplyData,
+  handleErrors(messageController.replyMessage));
 
-// Route to build account reply message view
-router.post("/reply", validate.replyRules(), validate.checkReplyData, 
-    handleErrors(messageController.replyMessage));
-
+// READ
 // Route to set message_read = true
 router.get("/read/:message_id", handleErrors(messageController.readMessage));
 

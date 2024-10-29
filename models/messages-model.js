@@ -1,10 +1,11 @@
 const pool = require("../database/")
 
 /* ***************************
-*  Get all message by account_id 
+*  Get all message by account_id (SELECT)
 * ************************** */
 async function getMessagesByAccountId(account_id){
   try {
+    // join account_id = message_to
     const sql = "SELECT * FROM public.message INNER JOIN public.account ON account.account_id = message.message_to WHERE message_to = $1 AND message_archived = false"
     return await pool.query(sql, [account_id])
   } catch (error) {
@@ -13,10 +14,11 @@ async function getMessagesByAccountId(account_id){
 }
 
 /* ***************************
-*  Get archived messages by account_id
+*  Get archived messages by account_id (SELECT)
 * ************************** */
 async function getArchivedMessagesByAccountId(account_id){
   try {
+    // join account_id = message_to
     const sql = "SELECT * FROM public.message INNER JOIN public.account ON account.account_id = message.message_to WHERE message_to = $1 AND message_archived = true"
     return await pool.query(sql, [account_id])
   } catch (error) {
@@ -25,10 +27,11 @@ async function getArchivedMessagesByAccountId(account_id){
 }
 
 /* ***************************
-*  Get unread message count by account_id
+*  Get unread message count by account_id (SELECT)
 * ************************** */
 async function getUnreadMessageCountByAccountId(account_id){
   try {
+    // join account_id = message_to
     const sql = "SELECT * FROM public.message INNER JOIN public.account ON account.account_id = message.message_to WHERE message_to = $1 AND message_archived = false AND message_read = false"
     const data = await pool.query(sql, [account_id])
     return data.rowCount
@@ -38,10 +41,11 @@ async function getUnreadMessageCountByAccountId(account_id){
 }
 
 /* ***************************
-*  Get archived message count by account_id
+*  Get archived message count by account_id (SELECT)
 * ************************** */
 async function getArchivedMessageCountByAccountId(account_id){
   try {
+    // join account_id = message_to
     const sql = "SELECT * FROM public.message INNER JOIN public.account ON account.account_id = message.message_to WHERE message_to = $1 AND message_archived = true"
     const data = await pool.query(sql, [account_id])
     return data.rowCount
@@ -51,7 +55,7 @@ async function getArchivedMessageCountByAccountId(account_id){
 }
 
 /* *****************************
-*   Create and send new message
+*   Create and send new message (INSERT)
 * *************************** */
 async function sendNewMessage(message_to, message_from, message_subject, message_body){
   try {
@@ -63,10 +67,12 @@ async function sendNewMessage(message_to, message_from, message_subject, message
 }
 
 /* *****************************
-*   Get message by message_id
+*   Get message by message_id (SELECT)
 * *************************** */
 async function getMessageById(message_id){
   try {
+    // returns all message data and account data 
+    // associated with the message_from account_id
     const sql = "SELECT * FROM public.message INNER JOIN public.account ON message.message_from = account.account_id WHERE message_id = $1"
     return await pool.query(sql, [message_id])
   } catch (error) {
